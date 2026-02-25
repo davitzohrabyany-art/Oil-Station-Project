@@ -1,0 +1,13 @@
+global using System.ComponentModel.DataAnnotations;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using System.Runtime.InteropServices.JavaScript;
+global using OilChangeApp.resourcesSql;
+global using Dapper;
+global using System;
+global using System.Threading.Tasks;
+global using Telegram.Bot;
+global using Telegram.Bot.Types;
+global using System.ComponentModel.DataAnnotations;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using Telegram.Bot.Polling;
+global using Telegram.Bot.Requests;
