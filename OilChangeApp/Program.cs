@@ -23,6 +23,12 @@ class Program
         //     Password = "admin123",
         //     OilType = "Synthetic"
         // });
+        // db.BanedUsers.Add(new BanedUsers
+        // {
+        //     BanedTgId = 1,
+        //     ExpiredDate = DateTime.Now,
+        //         
+        // });
         db.SaveChanges();
         testBot.Start();
         testBot.OnMessage += CommandLogic.OnMessage;

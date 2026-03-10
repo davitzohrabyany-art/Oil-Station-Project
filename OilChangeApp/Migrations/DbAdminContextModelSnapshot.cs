@@ -47,7 +47,7 @@ namespace OilChangeApp.Migrations
 
                     b.HasKey("Admin_id");
 
-                    b.ToTable("Admins", (string)null);
+                    b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("OilChangeApp.Car", b =>
@@ -80,7 +80,24 @@ namespace OilChangeApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Car", (string)null);
+                    b.ToTable("Car");
+                });
+
+            modelBuilder.Entity("OilChangeApp.Domain.Entities.BanedUsers", b =>
+                {
+                    b.Property<int>("BanedTgId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("BanedTgId"));
+
+                    b.Property<DateTime>("ExpiredDate")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("ExpiredDate");
+
+                    b.HasKey("BanedTgId");
+
+                    b.ToTable("BanedUsers");
                 });
 
             modelBuilder.Entity("OilChangeApp.Domain.Entities.Oil_change", b =>
@@ -121,7 +138,7 @@ namespace OilChangeApp.Migrations
 
                     b.HasIndex("Service_id");
 
-                    b.ToTable("Oil_change", (string)null);
+                    b.ToTable("Oil_change");
                 });
 
             modelBuilder.Entity("OilChangeApp.Domain.Entities.Service_visit", b =>
@@ -144,7 +161,7 @@ namespace OilChangeApp.Migrations
 
                     b.HasIndex("Car_id");
 
-                    b.ToTable("Service_visit", (string)null);
+                    b.ToTable("Service_visit");
                 });
 
             modelBuilder.Entity("OilChangeApp.User", b =>
@@ -161,7 +178,7 @@ namespace OilChangeApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("OilChangeApp.user_Car", b =>
@@ -178,7 +195,7 @@ namespace OilChangeApp.Migrations
 
                     b.HasIndex("CarId");
 
-                    b.ToTable("User_Car", (string)null);
+                    b.ToTable("User_Car");
                 });
 
             modelBuilder.Entity("OilChangeApp.Domain.Entities.Oil_change", b =>
@@ -206,13 +223,13 @@ namespace OilChangeApp.Migrations
             modelBuilder.Entity("OilChangeApp.user_Car", b =>
                 {
                     b.HasOne("OilChangeApp.Car", "Car")
-                        .WithMany()
+                        .WithMany("UserCars")
                         .HasForeignKey("CarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("OilChangeApp.User", "User")
-                        .WithMany()
+                        .WithMany("UserCars")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -220,6 +237,16 @@ namespace OilChangeApp.Migrations
                     b.Navigation("Car");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OilChangeApp.Car", b =>
+                {
+                    b.Navigation("UserCars");
+                });
+
+            modelBuilder.Entity("OilChangeApp.User", b =>
+                {
+                    b.Navigation("UserCars");
                 });
 #pragma warning restore 612, 618
         }

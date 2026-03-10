@@ -11,6 +11,7 @@ public class DbContext : Microsoft.EntityFrameworkCore.DbContext
     public DbSet<Car> Car { get; set; }
     public DbSet<User> User { get; set; }
     public DbSet<user_Car> User_Car { get; set; }
+    public DbSet<BanedUsers> BanedUsers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
