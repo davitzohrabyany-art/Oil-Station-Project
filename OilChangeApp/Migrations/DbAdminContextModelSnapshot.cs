@@ -47,7 +47,7 @@ namespace OilChangeApp.Migrations
 
                     b.HasKey("Admin_id");
 
-                    b.ToTable("Admins");
+                    b.ToTable("Admins", (string)null);
                 });
 
             modelBuilder.Entity("OilChangeApp.Car", b =>
@@ -80,7 +80,7 @@ namespace OilChangeApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Car");
+                    b.ToTable("Car", (string)null);
                 });
 
             modelBuilder.Entity("OilChangeApp.Domain.Entities.Oil_change", b =>
@@ -121,7 +121,7 @@ namespace OilChangeApp.Migrations
 
                     b.HasIndex("Service_id");
 
-                    b.ToTable("Oil_change");
+                    b.ToTable("Oil_change", (string)null);
                 });
 
             modelBuilder.Entity("OilChangeApp.Domain.Entities.Service_visit", b =>
@@ -144,7 +144,7 @@ namespace OilChangeApp.Migrations
 
                     b.HasIndex("Car_id");
 
-                    b.ToTable("Service_visit");
+                    b.ToTable("Service_visit", (string)null);
                 });
 
             modelBuilder.Entity("OilChangeApp.User", b =>
@@ -155,21 +155,16 @@ namespace OilChangeApp.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("Phone_number");
-
                     b.Property<long>("TelegramId")
                         .HasColumnType("bigint")
                         .HasColumnName("Telegram_id");
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
-            modelBuilder.Entity("OilChangeApp.User_Car", b =>
+            modelBuilder.Entity("OilChangeApp.user_Car", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int")
@@ -183,7 +178,7 @@ namespace OilChangeApp.Migrations
 
                     b.HasIndex("CarId");
 
-                    b.ToTable("User_Car");
+                    b.ToTable("User_Car", (string)null);
                 });
 
             modelBuilder.Entity("OilChangeApp.Domain.Entities.Oil_change", b =>
@@ -208,7 +203,7 @@ namespace OilChangeApp.Migrations
                     b.Navigation("Car");
                 });
 
-            modelBuilder.Entity("OilChangeApp.User_Car", b =>
+            modelBuilder.Entity("OilChangeApp.user_Car", b =>
                 {
                     b.HasOne("OilChangeApp.Car", "Car")
                         .WithMany()

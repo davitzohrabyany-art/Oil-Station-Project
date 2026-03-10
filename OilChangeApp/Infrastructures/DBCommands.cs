@@ -5,12 +5,10 @@ namespace OilChangeApp.resourcesSql;
 public class DBCommands
 {
     
-    private static readonly string connectionString = "Server=127.0.0.1;Port=3306;User=root;Database=oilstationdb;Password=D096055655d;";
-    private static MySqlConnection GetConnection() => new MySqlConnection(connectionString);
-    public static async Task<bool> UserExists(long tgId)
+    public static async Task<bool> DoesUserExists(long tgId)
     {
 
-        using var connection = new MySqlConnection(connectionString);
+        await using var connection = DbConnectionFactory.CreateConnection();
         await connection.OpenAsync();
 
         var query = "SELECT COUNT(*) FROM user WHERE Telegram_id = @tgId";
@@ -19,13 +17,12 @@ public class DBCommands
         command.Parameters.AddWithValue("@tgId", tgId);
 
         var result = (long)await command.ExecuteScalarAsync();
-
         return result > 0;
     }
 
     public static async Task<bool> DoesUserConnects(string carPassword, string userCarNumber)
     {
-        using var connection = new MySqlConnection(connectionString);
+        await using var connection = DbConnectionFactory.CreateConnection();
         await connection.OpenAsync();
         var query = "SELECT COUNT(*) FROM car WHERE car_num = @userCarNumber and password = @carPassword";
         using var command = new MySqlCommand(query, connection);
@@ -37,7 +34,7 @@ public class DBCommands
 
     public static string InfoAboutCar(string userCarNumber)
     {
-        using var connection = new MySqlConnection(connectionString);
+        using var connection = DbConnectionFactory.CreateConnection();
         connection.Open();
         var query = "SELECT oil_type, car_name FROM car WHERE car_num = @userCarNumber";
         using var command = new MySqlCommand(query, connection);
@@ -55,7 +52,7 @@ public class DBCommands
 
     public static string InfoAboutOil(string carPassword, string userCarNumber)
     {
-        using var connection = new MySqlConnection(connectionString);
+        using var connection = DbConnectionFactory.CreateConnection();
         connection.Open();
         var query = "SELECT Id FROM car WHERE car_num = @userCarNumber and password = @carPassword";
         using var command = new MySqlCommand(query, connection);
@@ -82,8 +79,51 @@ public class DBCommands
         return "No information about the oil";
     }
 
-    public static async void CreatingUser()
-    {
+    public static async Task CreatingUser(int Id, int carId)
+    { 
+        await using var connection = DbConnectionFactory.CreateConnection();
+        await connection.OpenAsync();
+
+        var query = "INSERT INTO user_car (user_id, car_id) VALUES (@Id, @carId)";
+
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@Id", Id);
+        command.Parameters.AddWithValue("@carId", carId);
+
+        await command.ExecuteNonQueryAsync();
     }
 
+    public static int SelectCarId(string carPassword, string userCarNumber)
+    {
+        using var connection = DbConnectionFactory.CreateConnection();
+        connection.Open();
+        var query = "SELECT Id FROM car WHERE car_num = @userCarNumber and password = @carPassword";
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@userCarNumber", userCarNumber);
+        command.Parameters.AddWithValue("@carPassword", carPassword);
+        var carId = (int)command.ExecuteScalar();
+        return carId;
+    }
+
+    public static async Task<int> FindingUserIdFromTgId(long tgId)
+    {
+        await using var connection = DbConnectionFactory.CreateConnection();
+        await connection.OpenAsync();
+        var query = "SELECT Id FROM user WHERE Telegram_id = @tgId";
+        using var command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@tgId", tgId);
+        var result = await command.ExecuteScalarAsync();
+        if (result != null && result != DBNull.Value)
+        {
+            return int.Parse(result.ToString());
+        }
+        var insertQuery = "INSERT INTO user (Telegram_id) VALUES (@tgId); SELECT LAST_INSERT_ID();";
+        using var insertCommand = new MySqlCommand(insertQuery, connection);
+        insertCommand.Parameters.AddWithValue("@tgId", tgId);
+
+        var newId = await insertCommand.ExecuteScalarAsync();
+        return int.Parse(newId.ToString());
+        
+        //Todo Rename Method Names
+    }
 }

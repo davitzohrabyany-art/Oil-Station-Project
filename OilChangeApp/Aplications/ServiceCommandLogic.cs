@@ -1,82 +1,60 @@
 
+using OilChangeApp.Domain.Entities;
+using OilChangeApp.Infrastructures;
+using OilChangeApp.Infrastructures.inbotcommands;
+
 namespace OilChangeApp.Aplications;
 
 
 public class CommandLogic
-{
-    static async Task<string> GotMessage(ITelegramBotClient client, Update update)
     {
-        await client.SendMessage(update.Message?.Chat.Id ?? 0, "Hi enter your password");
-        string message = update.Message?.Text ?? "";
-        await Task.Yield();
-        return message;
-    }
-    static Dictionary<long, string> userStates = new();
-    static Dictionary<long, string> tempPasswords = new();
+        private static Dictionary<long, string> userStates = new();
+        private static Dictionary<long, string> userStatesForConnection = new();
+        private static Dictionary<long, string> tempPasswords = new();
+        private static Dictionary<long, string> carNumber = new();
+        private static Dictionary<long, string> carName = new();
+        private static Dictionary<long, string> carPassword = new();
+        private static Dictionary<long, string> oilType = new();
+        private static Dictionary<long, string> oilLiters = new();
+        private static Dictionary<long, string> nextChangeKm = new();
+        private static Dictionary<long, string> oilLocation = new();
+        private static Dictionary<long, string> nextChangeDate = new();
+        private static Dictionary<long, string> visit_date = new();
 
-    public static async void OnMessage(ITelegramBotClient client, Update update)
-    {
-        if(update.Message?.Text == "/startasadmin")
+        private static async Task RouteCommands(Update update, ITelegramBotClient client)
         {
-            await client.SendMessage(update.Message?.Chat.Id ?? 0, "Enter password");
-        }
-        var chatId = update.Message?.Chat.Id ?? 0;
-        var text = update.Message?.Text ?? "";
-        
-        if (text == "/connectToCar")
-        {
-            userStates[chatId] = "awaiting_password";
-            await client.SendMessage(chatId, "Enter password:");
-            return;
-        }
+            var text = update.Message?.Text ?? "";
 
-        if (userStates.ContainsKey(chatId))
-        {
-            if (userStates[chatId] == "awaiting_password")
+            if (text == "/start")
             {
-                tempPasswords[chatId] = text;
-                userStates[chatId] = "awaiting_car_number";
-                await client.SendMessage(chatId, "Enter car number:");
+                await StartCommand.Start(text, client, update);
                 return;
             }
 
-            if (userStates[chatId] == "awaiting_car_number")
+            if (text == "/connecttocar" || userStatesForConnection.ContainsKey(update.Message.Chat.Id))
             {
-                var password = tempPasswords[chatId];
-                var carNumber = text;
+                await ConnectToCarCommand.ConnectToCar(userStatesForConnection, tempPasswords, update, client);
+                return;
+            }
 
-                var carExists = await DBCommands.DoesUserConnects(password, carNumber);
+            if (text.StartsWith("/mycars"))
+            {
+                await MyCarsCommand.MyCars(update, client);
+                return;
+            }
 
-                if (carExists)
-                {
-                    await client.SendMessage(chatId, "Car connected!");
-                    await client.SendMessage(chatId, text: DBCommands.InfoAboutCar(carNumber));
-                    await client.SendMessage(chatId, text: DBCommands.InfoAboutOil(password, carNumber));
-                    await client.SendMessage(chatId, "if you want to save your username /SaveUsername");
-                }
-
-                else
-                {
-                    await client.SendMessage(chatId, "Wrong password or car number");
-                }
-
-
-                userStates.Remove(chatId);
-                tempPasswords.Remove(chatId);
+            if (text == "/startasadmin" || (userStates.ContainsKey(update.Message.Chat.Id) && userStates[update.Message.Chat.Id].StartsWith("WaitingFor")))
+            {
+                await StartAsAdminCommand.StartAsAdmin(
+                    userStates, tempPasswords, carNumber, carName, carPassword,
+                    oilType, oilLiters, nextChangeKm, oilLocation,
+                    nextChangeDate, visit_date, client, update);
                 return;
             }
         }
-        
 
-        
-        if(update.Message?.Text == "/mycars")
+        public static async void OnMessage(ITelegramBotClient client, Update update)
         {
-            var carExcists = await DBCommands.UserExists(update.Message.From.Id);
-            if (carExcists)
-            {
-                await client.SendMessage(update.Message?.Chat.Id ?? 0, "We found your car");
-            }
+            await RouteCommands(update, client);
         }
     }
-    
-}

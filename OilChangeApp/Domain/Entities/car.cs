@@ -14,4 +14,5 @@ public class Car
     public string password { get; set; }
     [Column("oil_type")]
     public string oil_type { get; set; }
+    public ICollection<user_Car> UserCars { get; set; }
 }

@@ -37,5 +37,7 @@ public class Host
         OnMessage.Invoke(client, update);
         await Task.CompletedTask;
     }
+    //Todo Add Bot Commands for Clients
+    
 }
 

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OilChangeApp;
 
-public class User_Car
+public class user_Car
 {
     [Column("User_id")]
     public int UserId { get; set; }

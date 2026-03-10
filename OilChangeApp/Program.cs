@@ -19,39 +19,10 @@ class Program
 
         // db.Admins.Add(new Admin
         // {
-        //     Nickname = "admin2",
-        //     Password = "12345",
+        //     Nickname = "adminFather",
+        //     Password = "admin123",
         //     OilType = "Synthetic"
         // });
-        // db.Users.Add(new User
-        // {
-        //     TelegramId = 720153725,
-        //     PhoneNumber = "99999999"
-        // });
-        // db.Car.Add(new Car
-        // {
-        //     car_name = "Toyota",
-        //     car_num = "01oo001",
-        //     password = "12345",
-        //     oil_type = "Lukoil"
-        // });
-        // db.Service_visit.Add(new Service_visit
-        // {
-        //     Service_id = 1,
-        //     Car_id = 1,
-        //     Visit_date = new DateTime(2024, 3, 16)
-        // });
-        // db.Oil_change.Add(new Oil_change
-        // {
-        //     Service_id = 1,
-        //     Oil_id = 1,
-        //     Oil_name = "Lukoil",
-        //     Oil_location = "Motor",
-        //     Next_change_km = 56,
-        //     Next_change_date = new DateTime(2026, 4, 20)
-        // });
-
-
         db.SaveChanges();
         testBot.Start();
         testBot.OnMessage += CommandLogic.OnMessage;
