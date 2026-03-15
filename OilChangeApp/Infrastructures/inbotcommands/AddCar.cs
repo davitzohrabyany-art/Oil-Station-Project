@@ -1,13 +1,12 @@
- using MySqlConnector;
- using OilChangeApp.Infrastructures;
+using MySqlConnector;
 
- public class StartAsAdminCommand
-    {
-        private static Dictionary<long, string> adminNicknames = new();
+namespace OilChangeApp.Infrastructures.inbotcommands;
 
-        public static async Task StartAsAdmin(
+public class AddCar
+{
+    private static Dictionary<long, string>  addedAdminNicknames = new();
+     public static async Task StartAsAdmin(
             Dictionary<long, string> userStates,
-            Dictionary<long, string> tempPasswords,
             Dictionary<long, string> carNumber,
             Dictionary<long, string> carName,
             Dictionary<long, string> carPassword,
@@ -21,14 +20,22 @@
         {
             var chatId = update.Message?.Chat.Id ?? 0;
             var text = update.Message?.Text ?? "";
-            var tgId = update.Message?.From.Id ?? 0;
+            var userTgId = update.Message?.From?.Id ?? 0;
             
-            if (text == "/startasadmin")
-            {
-                await client.SendMessage(chatId, "What is your nickname?");
-                userStates[chatId] = "WaitingForNickname";
-                return;
-            }
+            
+            var doesAdminExists = await AdminReposetory.DoesAdminExists(con, userTgId);
+                if (doesAdminExists)
+                {
+                    userStates[chatId] = "WaitingForCarNumber";
+                    await client.SendMessage(chatId, "Enter car number:");
+                    return;
+                }
+                else if(!doesAdminExists)
+                {
+                    await client.SendMessage(chatId, "You do not have admin privileges");
+                    return;
+                }
+            
 
           
             if (!userStates.ContainsKey(chatId) || !userStates[chatId].StartsWith("WaitingFor"))
@@ -38,31 +45,6 @@
 
             switch (currentState)
             {
-                case "WaitingForNickname":
-                    adminNicknames[chatId] = text;
-                    userStates[chatId] = "WaitingForPassword";
-                    await client.SendMessage(chatId, "Enter password:");
-                    return;
-
-                case "WaitingForPassword":
-                    var nickname = adminNicknames[chatId];
-                    var password = text;
-                    var adminExists = await AdminReposetory.DoesAdminExistsByNicknameAndPassword(con, nickname, password);
-                    if (adminExists)
-                    {
-                        userStates[chatId] = "WaitingForCarNumber";
-                        await AdminReposetory.CreateAdmin(con, nickname, password, tgId);
-                        await client.SendMessage(chatId, "Now you are added as admin by your telegram id you can create cars with /AddCar command");
-                        await client.SendMessage(chatId, "Enter car number:");
-                    }
-                    else
-                    {
-                        await client.SendMessage(chatId, "You do not have permission to use this command.");
-                        userStates.Remove(chatId);
-                        adminNicknames.Remove(chatId);
-                    }
-                    return;
-
                 case "WaitingForCarNumber":
                     carNumber[chatId] = text;
                     userStates[chatId] = "WaitingForCarName";
@@ -120,7 +102,6 @@
 
                     await client.SendMessage(chatId, "Car is created successfully!");
                     
-                    tempPasswords.Remove(chatId);
                     carName.Remove(chatId);
                     carPassword.Remove(chatId);
                     oilType.Remove(chatId);
@@ -129,15 +110,15 @@
                     nextChangeKm.Remove(chatId);
                     nextChangeDate.Remove(chatId);
                     visit_date.Remove(chatId);
-                    adminNicknames.Remove(chatId);
+                    addedAdminNicknames.Remove(chatId);
                     userStates.Remove(chatId);
                     return;
 
                 default:
                     await client.SendMessage(chatId, "An unexpected error occurred. Please try again.");
                     userStates.Remove(chatId);
-                    adminNicknames.Remove(chatId);
+                    addedAdminNicknames.Remove(chatId);
                     return;
             }
         }
-    }
+}

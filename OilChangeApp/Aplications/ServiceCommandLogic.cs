@@ -50,7 +50,17 @@ public class CommandLogic
                 await StartAsAdminCommand.StartAsAdmin(
                     userStates, tempPasswords, carNumber, carName, carPassword,
                     oilType, oilLiters, nextChangeKm, oilLocation,
-                    nextChangeDate, visit_date, client, update);
+                    nextChangeDate, visit_date, client, update, con);
+                return;
+            }
+
+            if (text == "/addcar" || (userStates.ContainsKey(update.Message.Chat.Id) &&
+                                      userStates[update.Message.Chat.Id].StartsWith("WaitingFor")))
+            {
+                await AddCar.StartAsAdmin(
+                    userStates, carNumber, carName, carPassword,
+                    oilType, oilLiters, nextChangeKm, oilLocation,
+                    nextChangeDate, visit_date, client, update, con);
                 return;
             }
         }

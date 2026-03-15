@@ -17,12 +17,11 @@ class Program
         Host testBot = new Host("8040948589:AAGyIxpxOcm6r0pZwo8VHyoUXmUTi-i18x8");
         using var db = new DbContext();
 
-        db.Admins.Add(new Admin
-        {
-            Nickname = "adminFather",
-            Password = "admin123",
-            TgId = 1
-        });
+        // db.Admins.Add(new Admin
+        // {
+        //     Nickname = "adminMe",
+        //     Password = "Hugo",
+        // });
         // db.BanedUsers.Add(new BanedUsers
         // {
         //     BanedTgId = 1066092660,
@@ -39,5 +38,6 @@ class Program
     //Todo /connectToCar (add car already connected)
     //Todo if car_num and car_name is same for service admin send car is created and dont create
     //Todo visite_date passed notify user
-    //
+    //Todo insert if not exists car number
+    //Todo add format tables for car numbers
 }
