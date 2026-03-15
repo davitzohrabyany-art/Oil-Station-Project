@@ -24,6 +24,8 @@ public class CommandLogic
         private static async Task RouteCommands(Update update, ITelegramBotClient client)
         {
             var text = update.Message?.Text ?? "";
+            var con = DbConnectionFactory.CreateConnection();
+            await BanAndUnBan.ChackToBan(con, update, client);
 
             if (text == "/start")
             {

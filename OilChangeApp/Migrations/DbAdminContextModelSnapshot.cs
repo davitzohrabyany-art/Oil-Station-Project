@@ -85,11 +85,11 @@ namespace OilChangeApp.Migrations
 
             modelBuilder.Entity("OilChangeApp.Domain.Entities.BanedUsers", b =>
                 {
-                    b.Property<int>("BanedTgId")
+                    b.Property<long>("BanedTgId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("BanedTgId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("BanedTgId"));
 
                     b.Property<DateTime>("ExpiredDate")
                         .HasColumnType("datetime(6)")

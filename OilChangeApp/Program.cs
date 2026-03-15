@@ -25,9 +25,8 @@ class Program
         // });
         // db.BanedUsers.Add(new BanedUsers
         // {
-        //     BanedTgId = 1,
-        //     ExpiredDate = DateTime.Now,
-        //         
+        //     BanedTgId = 1066092660,
+        //     ExpiredDate = DateTime.Now + TimeSpan.FromMinutes(5),
         // });
         db.SaveChanges();
         testBot.Start();

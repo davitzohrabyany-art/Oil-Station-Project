@@ -35,32 +35,29 @@
 
                  if (carExists)
                  {
-                     await client.SendMessage(chatId, "Car connected!");
-                     await client.SendMessage(chatId, await CarReposetory.SelectFromCar(carNumber));
-                     await client.SendMessage(chatId, await OilReposetory.InfoAboutOil(password, carNumber));
-                     
-
-                     var id = await UserReposetory.FindingUserIdFromTgId(tgId);
-                     var carId = await CarReposetory.SelectCarId(password, carNumber);
-                     await client.SendMessage(chatId, carId.ToString());
-                     await client.SendMessage(chatId, "Now you can view your car with /mycars");
                      try
                      {
-                         await UserReposetory.CreatingUser(id, carId);
+                         var id = await UserReposetory.FindingUserIdFromTgId(tgId);
+                         var carId = await CarReposetory.SelectCarId(password, carNumber);
+
+                         await UserCarReposetory.CreatingUserAndCar(id, carId);
+
+                         await client.SendMessage(chatId, "Car connected!");
+                         await client.SendMessage(chatId, await CarReposetory.SelectFromCar(carNumber));
+                         await client.SendMessage(chatId, await OilReposetory.InfoAboutOil(password, carNumber));
+                         await client.SendMessage(chatId, "Now you can view your car with /mycars");
                      }
                      catch (Exception ex)
                      {
                          await client.SendMessage(chatId, "Failed to connect car. Please try again later.");
                          Console.WriteLine(ex);
                      }
-
-                     
                  }
                  else
                  {
-                     await client.SendMessage(chatId, "Wrong password or car number");
+                     await client.SendMessage(chatId, "Car not found or password is incorrect.");
                  }
-
+                 
                  userStates.Remove(chatId);
                  tempPasswords.Remove(chatId);
                  return;
