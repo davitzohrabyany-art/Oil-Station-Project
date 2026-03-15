@@ -21,6 +21,7 @@ class Program
         {
             Nickname = "adminFather",
             Password = "admin123",
+            TgId = 1
         });
         // db.BanedUsers.Add(new BanedUsers
         // {
@@ -34,7 +35,6 @@ class Program
         
     }
     //Todo addMethode to rememberAdmin
-    //Todo delete OilType from Admin table
     //Todo Add ExceptionHandling for carCreating (for liters only number to give error if it is not number), (for visite date give error if format is wrong)
     //Todo /connectToCar (add car already connected)
     //Todo if car_num and car_name is same for service admin send car is created and dont create

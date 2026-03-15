@@ -35,15 +35,14 @@ namespace OilChangeApp.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("nickname");
 
-                    b.Property<string>("OilType")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("oil_type");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("password");
+
+                    b.Property<long>("TgId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("TgId");
 
                     b.HasKey("Admin_id");
 

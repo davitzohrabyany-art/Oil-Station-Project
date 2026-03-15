@@ -7,5 +7,7 @@ public class Admin
     public string Nickname { get; set; }
     [Column("password")]
     public string Password { get; set; }
+    [Column("TgId")]
+    public long TgId { get; set; }
     
 }
